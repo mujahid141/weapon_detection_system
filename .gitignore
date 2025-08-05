@@ -1,0 +1,5 @@
+/env
+/.env
+# Ignore environment variables file
+# This file contains sensitive information and should not be tracked by Git
+/.env

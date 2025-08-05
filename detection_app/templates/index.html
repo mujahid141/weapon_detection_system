@@ -1,0 +1,101 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Weapon Detection System</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+            background: #f4f6f8;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            padding-top: 60px;
+        }
+
+        .container {
+            background: #ffffff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            width: 90%;
+            max-width: 700px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 28px;
+            font-weight: 600;
+            color: #222;
+            margin-bottom: 24px;
+        }
+
+        form {
+            margin-top: 20px;
+        }
+
+        input[type="file"] {
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            width: 100%;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 12px 24px;
+            background: #0052cc;
+            color: white;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.3s ease;
+        }
+
+        button:hover {
+            background: #003f99;
+        }
+
+        video {
+            margin-top: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+            width: 100%;
+            max-width: 640px;
+        }
+
+        h2 {
+            margin-top: 40px;
+            font-size: 22px;
+            color: #1a1a1a;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🛡️ Upload a Video for Weapon Detection</h1>
+        <form method="POST" enctype="multipart/form-data" action="{% url 'detect_video' %}">
+            {% csrf_token %}
+            <input type="file" name="video" accept="video/*" required>
+            <br>
+            <button type="submit">Upload & Detect</button>
+        </form>
+
+        {% if result_video %}
+            <h2>🔍 Detection Result</h2>
+            <video controls>
+                <source src="{{ result_video.url }}" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        {% endif %}
+    </div>
+</body>
+</html>
