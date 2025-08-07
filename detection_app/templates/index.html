@@ -3,96 +3,161 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Weapon Detection System</title>
+    <title>Weapon Detection Dashboard</title>
     <link rel="stylesheet" href="{% static 'style.css' %}">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             margin: 0;
-            padding: 0;
             font-family: 'Inter', sans-serif;
-            background: #f4f6f8;
+            background-color: #f0f2f5;
             color: #333;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            min-height: 100vh;
-            padding-top: 60px;
         }
 
+        /* --- NAVIGATION --- */
+        nav {
+            background-color: #1f2d5a;
+            padding: 16px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        nav h1 {
+            font-size: 22px;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 24px;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: #d1d9f0;
+            font-weight: 500;
+            transition: 0.3s;
+        }
+
+        nav ul li a:hover {
+            color: white;
+        }
+
+        /* --- MAIN CONTAINER --- */
         .container {
-            background: #ffffff;
+            max-width: 1000px;
+            margin: 40px auto;
+            background: #fff;
             padding: 40px;
             border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            width: 90%;
-            max-width: 700px;
-            text-align: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.07);
         }
 
-        h1 {
-            font-size: 28px;
+        h2 {
+            font-size: 26px;
             font-weight: 600;
-            color: #222;
+            text-align: center;
             margin-bottom: 24px;
+            color: #222;
         }
 
         form {
             margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            align-items: center;
         }
 
         input[type="file"] {
-            padding: 10px;
+            padding: 12px;
             border-radius: 6px;
             border: 1px solid #ccc;
             width: 100%;
+            max-width: 500px;
         }
 
         button {
-            margin-top: 20px;
-            padding: 12px 24px;
-            background: #0052cc;
+            padding: 12px 32px;
+            background-color: #0052cc;
             color: white;
             font-weight: 600;
             border: none;
             border-radius: 8px;
             cursor: pointer;
-            transition: 0.3s ease;
+            transition: background 0.3s ease;
         }
 
         button:hover {
-            background: #003f99;
+            background-color: #003f99;
         }
 
         video {
-            margin-top: 20px;
+            margin-top: 30px;
             border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
             width: 100%;
-            max-width: 640px;
+            max-width: 800px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
         }
 
-        h2 {
-            margin-top: 40px;
-            font-size: 22px;
-            color: #1a1a1a;
+        @media (max-width: 768px) {
+            nav {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            nav ul {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .container {
+                padding: 20px;
+                margin: 20px;
+            }
         }
     </style>
 </head>
 <body>
+    <!-- Navigation Bar -->
+    <nav>
+        <h1>🛡️ Weapon Detection Dashboard</h1>
+        <ul>
+            <li><a href="#">Home</a></li>
+            <li><a href="{% url 'live_view' %}">Live Stream</a></li>
+            <li><a href="{% url 'index' %}">Upload Video</a></li>
+            <li><a href="{% url 'reports' %}">Reports</a></li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
     <div class="container">
-        <h1>🛡️ Upload a Video for Weapon Detection</h1>
-        <form method="POST" enctype="multipart/form-data" action="{% url 'detect_video' %}">
+        <h2>📤 Upload a Video for Detection</h2>
+
+        <form method="POST" enctype="multipart/form-data" action="">
             {% csrf_token %}
             <input type="file" name="video" accept="video/*" required>
-            <br>
+            <!-- <img src="{% url 'video_feed' %}" /> -->
             <button type="submit">Upload & Detect</button>
         </form>
 
         {% if result_video %}
-            <h2>🔍 Detection Result</h2>
+            <h2>🎯 Detection Result</h2>
             <video controls>
-                <source src="{{ result_video.url }}" type="video/mp4">
+                
                 Your browser does not support the video tag.
             </video>
         {% endif %}
