@@ -71,3 +71,8 @@ def video_feed(request):
 
 def stats_feed(request):
     return JsonResponse(stream.get_stats())
+    def stop_stream(request):
+        if stream.running:
+            stream.stop()
+            return JsonResponse({"status": "stopped"})
+        return JsonResponse({"status": "already_stopped"})
