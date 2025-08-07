@@ -4,7 +4,7 @@ from ultralytics import YOLO
 class DetectionStream:
     def __init__(self, video_path):
         self.cap = cv2.VideoCapture(video_path)
-        self.model = YOLO('../weapon_model/best.pt')  # Load YOLOv8 model
+        self.model = YOLO('../weapon_model/yolov8n_weapon_best.pt')  # Load YOLOv8 model
         self.running = False
         self.stats = {"detections": 0}
 
