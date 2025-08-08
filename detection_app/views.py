@@ -47,13 +47,19 @@ from django.http import StreamingHttpResponse, JsonResponse
 from django.shortcuts import render
 from django.core.files.storage import FileSystemStorage
 from .detection_stream import DetectionStream
+from django.contrib.auth.decorators import login_required
+
+@login_required(login_url='login')  # Redirects to login page if user is not authenticated
+def dashboard_view(request):
+    return render(request, 'your_dashboard_template.html')
+
 
 # Global stream object (initially None)
 stream = None
-
+@login_required(login_url='login')  # Redirects to login page if user is not authenticate
 def index(request):
     return render(request, "index.html")
-
+@login_required(login_url='login')  # Redirects to login page if user is not authenticated
 def reports(request):
     return render(request, "reports.html")
 
@@ -91,6 +97,8 @@ def stop_stream(request):
         return JsonResponse({"status": "stopped"})
     return JsonResponse({"status": "already_stopped"})
 
+
+@login_required(login_url='login')  # Redirects to login page if user is not authenticated
 def upload_video(request):
     global stream
     result_video_url = None
@@ -119,8 +127,8 @@ def upload_video(request):
     })
 
 # ✅ Path to your static video file (put test_vidtest_videoeo.mp4 in media folder)
-# VIDEO_PATH = os.path.join(settings.MEDIA_ROOT, "istockphoto-927128958-640_adpp_is.mp4")
-VIDEO_PATH = os.path.join(settings.MEDIA_ROOT, "Shadow of War combat is beautiful - Stealthy Enough (1080p, h264).mp4")
+VIDEO_PATH = os.path.join(settings.MEDIA_ROOT, "istockphoto-927128958-640_adpp_is.mp4")
+# VIDEO_PATH = os.path.join(settings.MEDIA_ROOT, "Shadow of War combat is beautiful - Stealthy Enough (1080p, h264).mp4")
 # VIDEO_PATH = os.path.join(settings.MEDIA_ROOT, "RAW_ #shooting caught on Lemay security #camera.mp4")
 
 # Global stream object
@@ -129,7 +137,7 @@ stream = DetectionStream(VIDEO_PATH)
 
 
 
-
+@login_required(login_url='login')  # Redirects to login page if user is not authenticated
 def live_view(request):
     return render(request, "live.html")
 
@@ -159,3 +167,44 @@ def stats_feed(request):
             stream.stop()
             return JsonResponse({"status": "stopped"})
         return JsonResponse({"status": "already_stopped"})
+    
+    
+    
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User
+from django.shortcuts import render, redirect
+from django.contrib import messages
+
+@login_required(login_url='login')  # Redirects to login page if user is not authenticated
+def project_structure_view(request):
+    return render(request, 'project_structure.html')
+
+def register_view(request):
+    if request.method == "POST":
+        username = request.POST['username']
+        password = request.POST['password']
+        if User.objects.filter(username=username).exists():
+            messages.error(request, "Username already exists.")
+            return redirect('register')
+        user = User.objects.create_user(username=username, password=password)
+        user.save()
+        messages.success(request, "Registration successful.")
+        return redirect('login')
+    return render(request, 'register.html')
+
+def login_view(request):
+    if request.method == "POST":
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect('live_view')  # Redirect to live stream
+        else:
+            messages.error(request, "Invalid credentials")
+            return redirect('login')
+    return render(request, 'login.html')
+
+def logout_view(request):
+    logout(request)
+    return redirect('login')

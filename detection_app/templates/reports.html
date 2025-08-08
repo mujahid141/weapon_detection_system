@@ -120,6 +120,9 @@
             <li><a href="{% url 'live_view' %}">Live Stream</a></li>
             <li><a href="{% url 'index' %}">Upload Video</a></li>
             <li><a href="#">Reports</a></li>
+            <li><a href="{% url 'project_structure' %}">Project Structure</a></li>
+            <li><a href="{% url 'logout' %}">Logout</a></li>
+
         </ul>
     </nav>
 
@@ -127,22 +130,25 @@
         <div class="card">
             <h2>🧠 Model(s) Used & Evaluation</h2>
 
-            <p><strong>Algorithms:</strong> RandomForest, ResNet50, YOLOv8</p>
+            <p><strong>Algorithms:</strong> YOLOv8n</p>
 
             <p><strong>Training Info:</strong></p>
             <ul>
-                <li><strong>Epochs Run:</strong> 50</li>
-                <li><strong>Batch Size:</strong> 32</li>
-                <li><strong>Learning Rate:</strong> 0.001</li>
+                <li><strong>Epochs Run:</strong> 30</li>
+                <li><strong>Batch Size:</strong> 8</li>
+                <li><strong>Imgsz:</strong> 640</li>
                 <li><strong>Optimizer:</strong> Adam</li>
+                <li><strong>pretrained:</strong> True</li>
+                
             </ul>
 
             <p><strong>Dataset Summary:</strong></p>
             <ul>
-                <li><strong>Total Images:</strong> 5,000</li>
-                <li><strong>Classes:</strong> Wheat, Rice, Maize, Tomato, Potato</li>
+                <li><strong>Total Images:</strong> 26292</li>
+                <li><strong>Classes:</strong>   Gernade        Gun        Knife </li>
             </ul>
         </div>
+        
 
         <div class="card">
             <h2>📈 Model Performance</h2>
@@ -174,60 +180,77 @@
 
     <script>
         // Model Metrics Bar
-        new Chart(document.getElementById('modelPerformanceChart').getContext('2d'), {
-            type: 'bar',
-            data: {
-                labels: ['Accuracy', 'Precision', 'Recall', 'F1 Score', 'AUC'],
-                datasets: [{
-                    label: 'Model Evaluation',
-                    data: [0.92, 0.89, 0.91, 0.90, 0.94],
-                    backgroundColor: ['#0d6efd', '#198754', '#ffc107', '#dc3545', '#6f42c1'],
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        max: 1
-                    }
-                }
+       new Chart(document.getElementById('modelPerformanceChart').getContext('2d'), {
+    type: 'bar',
+    data: {
+        labels: ['Accuracy (mAP50)', 'Precision', 'Recall', 'F1 Score', 'AUC (Est.)'],
+        datasets: [{
+            label: 'Model Evaluation',
+            data: [0.896, 0.879, 0.83, 0.854, 0.90],
+            backgroundColor: ['#0d6efd', '#198754', '#ffc107', '#dc3545', '#6f42c1'],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true,
+        scales: {
+            y: {
+                beginAtZero: true,
+                max: 1
             }
-        });
+        }
+    }
+});
 
         // Loss vs Accuracy
-        new Chart(document.getElementById('lossAccuracyChart').getContext('2d'), {
-            type: 'line',
-            data: {
-                labels: Array.from({ length: 50 }, (_, i) => i + 1),
-                datasets: [
-                    {
-                        label: 'Training Loss',
-                        data: [0.9, 0.8, 0.72, 0.6, 0.5, 0.42, 0.4, 0.38, 0.36, 0.34, 0.32, 0.31, 0.3, 0.29, 0.28, 0.27, 0.26, 0.25, 0.24, 0.23, 0.22, 0.21, 0.2, 0.19, 0.18, 0.17, 0.16, 0.15, 0.14, 0.14, 0.13, 0.12, 0.11, 0.1, 0.095, 0.09, 0.085, 0.08, 0.075, 0.07, 0.065, 0.06, 0.055, 0.05, 0.045, 0.04, 0.035, 0.03, 0.025, 0.02],
-                        borderColor: '#dc3545',
-                        fill: false,
-                        tension: 0.3
-                    },
-                    {
-                        label: 'Validation Accuracy',
-                        data: [0.4, 0.5, 0.6, 0.63, 0.66, 0.69, 0.7, 0.72, 0.74, 0.75, 0.76, 0.77, 0.78, 0.79, 0.8, 0.805, 0.81, 0.815, 0.82, 0.825, 0.83, 0.835, 0.84, 0.845, 0.85, 0.855, 0.86, 0.865, 0.87, 0.873, 0.876, 0.879, 0.882, 0.885, 0.888, 0.89, 0.892, 0.894, 0.896, 0.898, 0.9, 0.901, 0.902, 0.903, 0.904, 0.905, 0.906, 0.907, 0.908, 0.909],
-                        borderColor: '#198754',
-                        fill: false,
-                        tension: 0.3
-                    }
-                ]
+      new Chart(document.getElementById('lossAccuracyChart').getContext('2d'), {
+    type: 'line',
+    data: {
+        labels: Array.from({ length: 30 }, (_, i) => i + 1),
+        datasets: [
+            {
+                label: 'Training Loss',
+                data: [0.9, 0.8, 0.72, 0.6, 0.5, 0.42, 0.4, 0.38, 0.36, 0.34, 0.32, 0.31, 0.3, 0.29, 0.28, 0.27, 0.26, 0.25, 0.24, 0.23, 0.22, 0.21, 0.2, 0.19, 0.18, 0.17, 0.16, 0.15, 0.14, 0.14],
+                borderColor: '#dc3545',
+                fill: false,
+                tension: 0.3
             },
-            options: {
-                responsive: true,
-                plugins: {
-                    title: {
-                        display: true,
-                        text: 'Training Loss & Validation Accuracy Over Epochs'
-                    }
-                }
+            {
+                label: 'Validation Accuracy',
+                data: [0.4, 0.5, 0.6, 0.63, 0.66, 0.69, 0.7, 0.72, 0.74, 0.75, 0.76, 0.77, 0.78, 0.79, 0.8, 0.805, 0.81, 0.815, 0.82, 0.825, 0.83, 0.835, 0.84, 0.845, 0.85, 0.855, 0.86, 0.865, 0.87, 0.873],
+                borderColor: '#198754',
+                fill: false,
+                tension: 0.3
             }
-        });
+        ]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            title: {
+                display: true,
+                text: 'Training Loss & Validation Accuracy Over 30 Epochs'
+            }
+        },
+        scales: {
+            x: {
+                title: {
+                    display: true,
+                    text: 'Epochs'
+                }
+            },
+            y: {
+                title: {
+                    display: true,
+                    text: 'Value'
+                },
+                beginAtZero: true,
+                max: 1
+            }
+        }
+    }
+});
+
 
         // ROC Curve
         new Chart(document.getElementById('rocChart').getContext('2d'), {
