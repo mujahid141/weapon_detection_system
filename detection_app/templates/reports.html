@@ -114,13 +114,15 @@
 </head>
 <body>
     <nav>
-        <h1>📊 Detection Analytics Dashboard</h1>
+        <h1> Detection Analytics Dashboard</h1>
         <ul>
-            <li><a href="{% url 'index' %}">Home</a></li>
-            <li><a href="{% url 'live_view' %}">Live Stream</a></li>
-            <li><a href="{% url 'index' %}">Upload Video</a></li>
-            <li><a href="#">Reports</a></li>
-            <li><a href="{% url 'project_structure' %}">Project Structure</a></li>
+            <li><a href="">Home</a></li>
+            <li><a href="{% url 'live_view'%}">Live Feed</a></li>
+            <li><a href="{% url 'index' %}">Upload</a></li>
+            <li><a href="{% url 'chat_page' %}">Chatbot</a></li>
+            <li><a href="{% url 'reports' %}">Reports</a></li>
+            <li><a href="{% url 'eda_view' %}">EDA</a></li>
+
             <li><a href="{% url 'logout' %}">Logout</a></li>
 
         </ul>
@@ -128,7 +130,7 @@
 
     <div class="container">
         <div class="card">
-            <h2>🧠 Model(s) Used & Evaluation</h2>
+            <h2> Model(s) Used & Evaluation</h2>
 
             <p><strong>Algorithms:</strong> YOLOv8n</p>
 
@@ -139,6 +141,9 @@
                 <li><strong>Imgsz:</strong> 640</li>
                 <li><strong>Optimizer:</strong> Adam</li>
                 <li><strong>pretrained:</strong> True</li>
+                <li><strong>Learning rate:</strong>  lr=0.001429</li>
+
+               
                 
             </ul>
 
@@ -147,32 +152,38 @@
                 <li><strong>Total Images:</strong> 26292</li>
                 <li><strong>Classes:</strong>   Gernade        Gun        Knife </li>
             </ul>
+            <p><strong>Model Summary:</strong></p>
+            <li> 129 layers </li>
+            <li> 3.0M parameters </li>
+            <li> 3.0M gradients </li>
+            <li> 8.2 GFLOPs </li>
+               
         </div>
         
 
         <div class="card">
-            <h2>📈 Model Performance</h2>
+            <h2> Model Performance</h2>
             <div class="chart-container">
                 <canvas id="modelPerformanceChart"></canvas>
             </div>
         </div>
 
         <div class="card">
-            <h2>📉 Training Progress</h2>
+            <h2> Training Progress</h2>
             <div class="chart-container">
                 <canvas id="lossAccuracyChart"></canvas>
             </div>
         </div>
 
         <div class="card">
-            <h2>🎯 ROC Curve</h2>
+            <h2> ROC Curve</h2>
             <div class="chart-container">
                 <canvas id="rocChart"></canvas>
             </div>
         </div>
 
         <div class="card">
-            <h5>📌 Confusion Matrix</h5>
+            <h5> Confusion Matrix</h5>
             <img src="{% static 'confusion_matrix.png' %}" alt="Confusion Matrix" class="screenshot">
             <p class="caption">Model Confusion Matrix for 5 Classes</p>
         </div>

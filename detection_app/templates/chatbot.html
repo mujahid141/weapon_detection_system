@@ -1,0 +1,365 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>💬 Project Chatbot — Weapon Detection</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <style>
+        :root{
+            --bg: #f0f2f6;
+            --card: #ffffff;
+            --muted: #6b7280;
+            --accent: #1f2d5a;
+            --accent-2: #ff4b5c;
+            --glass: rgba(255,255,255,0.85);
+        }
+        *{box-sizing:border-box}
+        body{
+            margin:0;
+            font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+            background: linear-gradient(180deg,#eef2ff 0%, #f7fafc 100%);
+            color:#0f172a;
+            -webkit-font-smoothing:antialiased;
+        }
+
+        /* top nav */
+        nav{
+            background:var(--accent);
+            color:white;
+            padding:14px 28px;
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            box-shadow: 0 4px 18px rgba(31,45,90,0.12);
+        }
+        nav h1{font-size:18px;margin:0;font-weight:600;letter-spacing:0.2px}
+        nav a{color:rgba(255,255,255,0.9);text-decoration:none;margin-left:18px;font-weight:500}
+
+        /* main container */
+        .wrap{
+            max-width:1100px;
+            margin:34px auto;
+            padding:22px;
+        }
+
+        .panel{
+            display:grid;
+            grid-template-columns: 1fr 360px;
+            gap:20px;
+            align-items:start;
+        }
+
+        /* chat card */
+        .chat-card{
+            background:var(--card);
+            border-radius:12px;
+            padding:20px;
+            box-shadow:0 12px 30px rgba(15,23,42,0.06);
+            min-height:520px;
+            display:flex;
+            flex-direction:column;
+        }
+        .chat-header{
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            margin-bottom:12px;
+        }
+        .chat-title{
+            font-weight:700;color:#0b1220;font-size:16px;
+        }
+        .chat-sub{font-size:13px;color:var(--muted)}
+
+        .chat-window{
+            flex:1;
+            background: linear-gradient(180deg, rgba(247,249,252,0.9), rgba(255,255,255,0.7));
+            border-radius:10px;
+            padding:16px;
+            overflow:auto;
+            border:1px solid #eef2f6;
+        }
+
+        .bubble{
+            max-width:78%;
+            margin:8px 0;
+            padding:12px 14px;
+            border-radius:14px;
+            line-height:1.4;
+            box-shadow: 0 4px 10px rgba(16,24,40,0.03);
+            font-size:14px;
+        }
+        .user{ margin-left:auto; background: linear-gradient(90deg,#ffefeF,#ffdfe5); border-radius:14px 14px 6px 14px; color:#0b1220; font-weight:600}
+        .bot{ margin-right:auto; background:#f3f6ff; border-radius:14px 14px 14px 6px; color:#0b1220}
+
+        .meta{
+            font-size:12px;color:var(--muted); margin-top:6px;
+        }
+
+        /* input area */
+        .composer{
+            margin-top:12px;
+            display:flex;
+            gap:8px;
+            align-items:center;
+        }
+        .composer input[type="text"]{
+            flex:1;
+            padding:12px 14px;
+            border-radius:10px;
+            border:1px solid #e6eefc;
+            outline:none;
+            font-size:14px;
+            background:white;
+        }
+        .composer button{
+            background:var(--accent-2);
+            border:none;
+            color:white;
+            padding:10px 14px;
+            border-radius:10px;
+            cursor:pointer;
+            font-weight:700;
+            box-shadow:0 6px 18px rgba(255,75,92,0.16);
+        }
+        .composer button:disabled{opacity:0.6;cursor:not-allowed}
+
+        .typing{
+            display:inline-block;
+            margin-left:8px;
+            height:8px;width:40px;
+            background:linear-gradient(90deg,#dfeaff,#f7f9ff);
+            border-radius:8px;
+            animation: blink 1s infinite;
+        }
+        @keyframes blink {0%{opacity:0.2}50%{opacity:1}100%{opacity:0.2}}
+
+        /* right column (kb + controls) */
+        .side{
+            background:var(--card);
+            padding:18px;
+            border-radius:12px;
+            box-shadow:0 12px 30px rgba(15,23,42,0.06);
+            height:520px;
+            display:flex;
+            flex-direction:column;
+            gap:12px;
+        }
+        .side h3{margin:0;font-size:15px;}
+        .quick-list{display:flex;flex-direction:column;gap:8px;margin-top:8px}
+        .quick-btn{
+            border:1px solid #eef3ff;
+            padding:10px 12px;
+            border-radius:10px;
+            background:transparent;
+            text-align:left;
+            cursor:pointer;
+            font-weight:600;
+            color:#0f172a;
+        }
+        .quick-btn:hover{background:#f3f6ff}
+
+        .actions{margin-top:auto; display:flex; gap:8px; justify-content:space-between}
+        .actions button{padding:10px 12px;border-radius:8px;border:1px solid #e6eefc;background:white; cursor:pointer}
+        .actions .danger{background:#fff5f6;border-color:#ffd6db;color:#b62b3a}
+
+        .small{font-size:12px;color:var(--muted);}
+
+        /* responsive */
+        @media (max-width: 920px){
+            .panel{grid-template-columns:1fr}
+            .side{height:auto}
+            .chat-card{min-height:420px}
+        }
+    </style>
+</head>
+<body>
+<nav>
+    <div style="display:flex;align-items:center;gap:12px">
+        <h1>🛡️ Weapon Detection</h1>
+        <span style="font-size:13px;color:rgba(255,255,255,0.85)">— Project Assistant</span>
+    </div>
+    <div>
+        <a href="{% url 'index' %}">Home</a>
+        <a href="{% url 'live_view' %}" style="margin-left:10px">Live</a>
+        <a href="{% url 'reports' %}" style="margin-left:10px">Reports</a>
+    </div>
+</nav>
+
+<div class="wrap">
+    <div class="panel">
+        <!-- Chat column -->
+        <div class="chat-card" role="region" aria-label="chat panel">
+            <div class="chat-header">
+                <div>
+                    <div class="chat-title">Project Chatbot</div>
+                    <div class="chat-sub">Ask about models, training, dataset, deployment and more.</div>
+                </div>
+                <div class="small">Interactive • Contextual</div>
+            </div>
+
+            <div id="chatWindow" class="chat-window" aria-live="polite">
+                <!-- messages will be injected here -->
+            </div>
+
+            <div class="composer" aria-label="chat composer">
+                <input id="chatInput" type="text" placeholder="Type your question (e.g. 'which model is used?')" autocomplete="off">
+                <button id="sendBtn">Send</button>
+                <div id="typingIndicator" style="display:none" class="typing" title="Bot is typing"></div>
+            </div>
+        </div>
+
+        <!-- Right column -->
+        <aside class="side" aria-label="help and quick questions">
+            <h3>Quick Questions</h3>
+            <div class="quick-list">
+                <button class="quick-btn" data-q="Which models are used?">Which models are used?</button>
+                <button class="quick-btn" data-q="How was the weapon model trained?">How was the weapon model trained?</button>
+                <button class="quick-btn" data-q="What dataset was used?">What dataset was used?</button>
+                <button class="quick-btn" data-q="How to run locally?">How to run locally?</button>
+                <button class="quick-btn" data-q="How do I interpret stats?">How do I interpret stats?</button>
+            </div>
+
+            <div>
+                <h3>Conversation</h3>
+                <div class="small">Your chat is stored locally in this browser session.</div>
+                <div style="margin-top:8px" class="small">Pro tip: click a quick question to auto-send.</div>
+            </div>
+
+            <div class="actions">
+                <button id="clearChat">Clear</button>
+                <button id="exportChat">Export</button>
+            </div>
+        </aside>
+    </div>
+</div>
+
+<script>
+/*
+  Chatbot frontend script
+  - Uses fetch POST to the 'chatbot_api' endpoint
+  - Reads CSRF token from cookie (Django default)
+  - Persists conversation to localStorage
+*/
+
+// util: read cookie
+function getCookie(name) {
+    const v = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
+    return v ? v.pop() : '';
+}
+
+const chatWindow = document.getElementById('chatWindow');
+const chatInput = document.getElementById('chatInput');
+const sendBtn = document.getElementById('sendBtn');
+const typingIndicator = document.getElementById('typingIndicator');
+
+const STORAGE_KEY = 'project_chat_history_v1';
+let conversation = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+
+// render conversation
+function renderConversation() {
+    chatWindow.innerHTML = '';
+    for (const msg of conversation) {
+        const div = document.createElement('div');
+        div.className = 'bubble ' + (msg.from === 'user' ? 'user' : 'bot');
+        div.innerHTML = `<div>${escapeHtml(msg.text)}</div>`;
+        chatWindow.appendChild(div);
+    }
+    chatWindow.scrollTop = chatWindow.scrollHeight;
+}
+renderConversation();
+
+// escape for safety
+function escapeHtml(unsafe) {
+    return unsafe
+         .replace(/&/g, "&amp;")
+         .replace(/</g, "&lt;")
+         .replace(/>/g, "&gt;")
+         .replace(/"/g, "&quot;")
+         .replace(/'/g, "&#039;");
+}
+
+// push message locally and save
+function pushMessage(from, text) {
+    conversation.push({from, text, ts: Date.now()});
+    if (conversation.length > 200) conversation.shift(); // keep small
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(conversation));
+    renderConversation();
+}
+
+// send message to backend
+async function sendToBot(text) {
+    typingIndicator.style.display = 'inline-block';
+    sendBtn.disabled = true;
+
+    try {
+        const res = await fetch("{% url 'chatbot_api' %}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify({message: text})
+        });
+        const data = await res.json();
+        const reply = data.reply || '[no response]';
+        pushMessage('bot', reply);
+    } catch (e) {
+        pushMessage('bot', '⚠️ Error connecting to chat service.');
+        console.error(e);
+    } finally {
+        typingIndicator.style.display = 'none';
+        sendBtn.disabled = false;
+    }
+}
+
+// handle send action
+async function handleSend() {
+    const text = chatInput.value.trim();
+    if (!text) return;
+    pushMessage('user', text);
+    chatInput.value = '';
+    await sendToBot(text);
+}
+
+// enter key
+chatInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        handleSend();
+    }
+});
+
+// button
+sendBtn.addEventListener('click', handleSend);
+
+// quick questions
+document.querySelectorAll('.quick-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const q = btn.dataset.q;
+        chatInput.value = q;
+        handleSend();
+    });
+});
+
+// clear chat
+document.getElementById('clearChat').addEventListener('click', () => {
+    if (!confirm('Clear chat history?')) return;
+    conversation = [];
+    localStorage.removeItem(STORAGE_KEY);
+    renderConversation();
+});
+
+// export chat
+document.getElementById('exportChat').addEventListener('click', () => {
+    const text = conversation.map(m => `${m.from.toUpperCase()}: ${m.text}`).join('\\n\\n');
+    const blob = new Blob([text], {type:'text/plain'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'chat_history.txt'; document.body.appendChild(a); a.click();
+    a.remove(); URL.revokeObjectURL(url);
+});
+</script>
+</body>
+</html>

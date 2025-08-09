@@ -3,163 +3,129 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Weapon Detection Dashboard</title>
+    <title>🛡️ Weapon Detection - YouTube</title>
     <link rel="stylesheet" href="{% static 'style.css' %}">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <style>
-        * {
-            box-sizing: border-box;
-        }
-
         body {
-            margin: 0;
             font-family: 'Inter', sans-serif;
-            background-color: #f0f2f5;
-            color: #333;
+        background-color: #f0f2f5;
+        color: #222;
+        min-height: 100vh;
         }
-
-        /* --- NAVIGATION --- */
         nav {
             background-color: #1f2d5a;
-            padding: 16px 40px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            color: white;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        padding: 16px 40px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        color: white;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        flex-wrap: wrap;
         }
-
         nav h1 {
             font-size: 22px;
             font-weight: 600;
             margin: 0;
         }
-
         nav ul {
             list-style: none;
             display: flex;
             gap: 24px;
         }
-
         nav ul li a {
             text-decoration: none;
             color: #d1d9f0;
             font-weight: 500;
             transition: 0.3s;
         }
-
         nav ul li a:hover {
             color: white;
         }
-
-        /* --- MAIN CONTAINER --- */
         .container {
-            max-width: 1000px;
-            margin: 40px auto;
-            background: #fff;
+            max-width: 700px;
+            margin: 60px auto;
+            background: rgba(255, 255, 255, 0.05);
             padding: 40px;
             border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.07);
-        }
-
-        h2 {
-            font-size: 26px;
-            font-weight: 600;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
             text-align: center;
-            margin-bottom: 24px;
-            color: #222;
         }
-
+        h2 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
         form {
-            margin-top: 20px;
             display: flex;
-            flex-direction: column;
-            gap: 16px;
-            align-items: center;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
         }
-
-        input[type="file"] {
+        input[type="url"] {
             padding: 12px;
             border-radius: 6px;
-            border: 1px solid #ccc;
-            width: 100%;
-            max-width: 500px;
-        }
-
-        button {
-            padding: 12px 32px;
-            background-color: #0052cc;
-            color: white;
-            font-weight: 600;
             border: none;
-            border-radius: 8px;
+            width: 100%;
+            max-width: 450px;
+            font-size: 14px;
+        }
+        button {
+            padding: 12px 24px;
+            background-color: #ff4b5c;
+            color: white;
+            border: none;
+            border-radius: 6px;
             cursor: pointer;
+            font-weight: bold;
             transition: background 0.3s ease;
         }
-
         button:hover {
-            background-color: #003f99;
+            background-color: #d63447;
         }
-
         video {
             margin-top: 30px;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
             width: 100%;
-            max-width: 800px;
-            display: block;
-            margin-left: auto;
-            margin-right: auto;
+            max-width: 650px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.4);
         }
-
-        @media (max-width: 768px) {
-            nav {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 10px;
-            }
-
-            nav ul {
-                flex-direction: column;
-                gap: 10px;
-            }
-
-            .container {
-                padding: 20px;
-                margin: 20px;
-            }
+        .error {
+            margin-top: 10px;
+            color: #ffcccc;
+            font-size: 14px;
         }
     </style>
 </head>
 <body>
-    <!-- Navigation Bar -->
     <nav>
-        <h1>🛡️ Weapon Detection Dashboard</h1>
+        <h1>🛡️ Weapon Detection</h1>
         <ul>
-            <li><a href="#">Home</a></li>
-            <li><a href="{% url 'live_view' %}">Live Stream</a></li>
+           <li><a href="">Home</a></li>
+            <li><a href="{% url 'live_view'%}">Live Feed</a></li>
+            <li><a href="{% url 'index' %}">Upload</a></li>
+            <li><a href="{% url 'chat_page' %}">Chatbot</a></li>
             <li><a href="{% url 'reports' %}">Reports</a></li>
-            <li><a href="{% url 'project_structure' %}">Project Structure</a></li>
             <li><a href="{% url 'logout' %}">Logout</a></li>
-            
         </ul>
     </nav>
 
-    <!-- Main Content -->
     <div class="container">
-        <h2>📤 Upload a Video for Detection</h2>
-
-        <form method="POST" enctype="multipart/form-data" action="">
+        <h2> Enter YouTube Video URL</h2>
+        <form method="POST" action="{% url 'upload_video' %}>
             {% csrf_token %}
-            <input type="file" name="video" accept="video/*" required>
-            <!-- <img src="{% url 'video_feed' %}" /> -->
-            <button type="submit">Upload & Detect</button>
+            <input type="url" name="youtube_url" placeholder="Paste YouTube video link here" required>
+            <button type="submit">Detect Weapons</button>
         </form>
 
+        {% if error_message %}
+            <div class="error">{{ error_message }}</div>
+        {% endif %}
+
         {% if result_video %}
-            <h2>🎯 Detection Result</h2>
+            <h2> Detection Result</h2>
             <video controls>
-                
+                <source src="{{ result_video }}" type="video/mp4">
                 Your browser does not support the video tag.
             </video>
         {% endif %}

@@ -9,6 +9,11 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout'),
     path('reports/', views.reports, name='reports'),
     path('index/', views.index, name='index'),
+    path('youtube/', views.upload_video, name='upload_video'),
     path('video/', views.video_feed, name='video_feed'),
     path('stats/', views.stats_feed, name='stats_feed'),
+    path('chatbot/', views.chatbot_api, name='chatbot_api'),
+    path('chat/', views.chat_page, name='chat_page'), 
+    path('eda/', views.edata_view, name='eda_view'), 
+
 ]

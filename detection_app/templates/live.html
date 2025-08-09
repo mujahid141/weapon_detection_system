@@ -131,9 +131,12 @@
         <h1>🛡️ Weapon Detection Dashboard</h1>
         <ul>
             <li><a href="">Home</a></li>
-            <li><a href="">Live Feed</a></li>
+            <li><a href="{% url 'live_view'%}">Live Feed</a></li>
             <li><a href="{% url 'index' %}">Upload</a></li>
+            <li><a href="{% url 'chat_page' %}">Chatbot</a></li>
             <li><a href="{% url 'reports' %}">Reports</a></li>
+            <li><a href="{% url 'eda_view' %}">EDA</a></li>
+
             <li><a href="{% url 'logout' %}">Logout</a></li>
 
         </ul>
@@ -150,7 +153,7 @@
 
         <!-- Stats Section -->
         <div class="card">
-            <h2>📊 Detection Statistics</h2>
+            <h2> Detection Statistics</h2>
             <div id="stats">Loading stats...</div>
         </div>
 

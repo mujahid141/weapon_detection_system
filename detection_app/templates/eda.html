@@ -1,0 +1,156 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>📊 EDA - Weapon Detection</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            background-color: #f6f7fb;
+            color: #333;
+        }
+
+        nav {
+            background-color: #1f2d5a;
+            padding: 16px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        nav h1 {
+            font-size: 22px;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 24px;
+            margin: 0;
+            padding: 0;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: #d1d9f0;
+            font-weight: 500;
+            transition: 0.3s;
+        }
+
+        nav ul li a:hover {
+            color: white;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+        }
+
+        h2 {
+            font-size: 28px;
+            margin-bottom: 20px;
+            font-weight: 600;
+            color: #1f2d5a;
+        }
+
+        h5 {
+            font-size: 20px;
+            margin-top: 40px;
+            font-weight: 600;
+            color: #1f2d5a;
+        }
+
+        .screenshot {
+            display: block;
+            margin: 20px auto;
+            max-width: 100%;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+
+        .caption {
+            text-align: center;
+            font-size: 14px;
+            color: #666;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <h1>Detection Analytics Dashboard</h1>
+        <ul>
+            <li><a href="{% url 'index' %}">Home</a></li>
+            <li><a href="{% url 'live_view' %}">Live Feed</a></li>
+            <li><a href="{% url 'index' %}">Upload</a></li>
+            <li><a href="{% url 'chat_page' %}">Chatbot</a></li>
+            <li><a href="{% url 'reports' %}">Reports</a></li>
+            <li><a href="{% url 'eda_view' %}">EDA</a></li>
+            <li><a href="{% url 'logout' %}">Logout</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+
+        <!-- Dataset Distribution -->
+        <div class="card">
+            <h2> Class Distribution Training</h2>
+            <img src="{% static 'Trainig_dataset.png' %}" alt="Dataset Distribution" class="screenshot">
+            
+        </div>
+
+        <!-- Class Frequency -->
+        <div class="card">
+            <h2> Class Distribution Validation</h2>
+            <img src="{% static 'Validation.png' %}" alt="Class Frequency" class="screenshot">
+        </div>
+
+        <!-- Sample Images -->
+        <div class="card">
+            <h2> Training  vs Validation Aspect Ratio</h2>
+            <img src="{% static 'Aspect Ratio.png' %}" alt="Sample Images" class="screenshot">
+        </div>
+
+        <!-- Bounding Box Size Distribution -->
+        <div class="card">
+            <h2>  scatter plots of bounding box widths vs. heights</h2>
+            <img src="{% static 'TRain Boxes.png' %}" alt="Bounding Box Distribution" class="screenshot">
+        </div>
+         <div class="card">
+            <h2> histograms of bounding box aspect ratios</h2>
+            <img src="{% static 'Histogram.png' %}" alt="Bounding Box Distribution" class="screenshot">
+        </div>
+
+
+         <div class="card">
+            <h2> Sample Pictures </h2>
+            <img src="{% static 'Sample1.png' %}" alt="Bounding Box Distribution" class="screenshot">
+            <img src="{% static 'Sample2.png' %}" alt="Bounding Box Distribution" class="screenshot">
+            <img src="{% static 'Sample3.png' %}" alt="Bounding Box Distribution" class="screenshot">
+        </div>
+    </div>
+
+</body>
+</html>
